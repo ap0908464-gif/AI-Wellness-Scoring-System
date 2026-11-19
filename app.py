@@ -9,15 +9,10 @@ import plotly.graph_objects as go
 import plotly.express as px
 from datetime import datetime
 
-# 1. Page Configuration (Mobile + Laptop Responsive)
-st.set_page_config(
-    page_title="AI Wellness Scoring System",
-    page_icon="🩺",
-    layout="wide",
-    initial_sidebar_state="collapsed"
-)
+# 1. Page Configuration
+st.set_page_config(page_title="AI Wellness Scoring System", page_icon="🩺", layout="wide", initial_sidebar_state="collapsed")
 
-# 2. Session State Initialization for Live Trackers
+# 2. Session State Initialization
 if "steps_val" not in st.session_state:
     st.session_state.steps_val = 7800
 if "water_val" not in st.session_state:
@@ -27,16 +22,14 @@ if "joined" not in st.session_state:
 if "history_log" not in st.session_state:
     st.session_state.history_log = []
 
-# 3. Mobile-First Clean Mint Theme & High-Contrast Inputs
+# 3. Clean Mint Theme
 st.markdown("""
 <style>
     .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
         background-color: #F4F7F6 !important;
         color: #1B4332 !important;
     }
-    label, p, h1, h2, h3, h4, span {
-        color: #1B4332 !important;
-    }
+    label, p, h1, h2, h3, h4, span { color: #1B4332 !important; }
     .stTextInput input, .stNumberInput input, [data-baseweb="select"] > div {
         background-color: #FFFFFF !important;
         color: #1B4332 !important;
@@ -79,13 +72,11 @@ st.markdown("""
         background-color: #1B4332 !important;
         color: #FFFFFF !important;
     }
-    .stTabs [aria-selected="true"] p {
-        color: #FFFFFF !important;
-    }
+    .stTabs [aria-selected="true"] p { color: #FFFFFF !important; }
 </style>
 """, unsafe_allow_html=True)
 
-# 4. ML Model Training & Evaluation
+# 4. ML Model Training
 @st.cache_resource
 def train_wellness_model():
     np.random.seed(42)
@@ -134,7 +125,7 @@ model, model_accuracy, feature_imp_df, sample_dataset = train_wellness_model()
 st.markdown("<h2 style='color:#1B4332; margin-bottom:2px;'>🩺 AI-Based Wellness Scoring System</h2>", unsafe_allow_html=True)
 st.caption("Interactive Health Analytics, Live Trackers & Predictive Wellness Engine")
 
-# 6. Main-Screen Input Card (Directly visible on Phone & Laptop!)
+# 6. Main-Screen Input Card
 with st.expander("✏️ Enter / Edit Your Health Parameters (Tap Here)", expanded=True):
     r1_c1, r1_c2, r1_c3, r1_c4 = st.columns([2, 1, 1, 1])
     with r1_c1:
@@ -175,7 +166,6 @@ elif ai_score >= 60:
 else:
     status_label = "Needs Attention"
 
-# Score Banner
 st.markdown(f"""
 <div class="health-card" style="background: linear-gradient(135deg, #1B4332, #2D6A4F); border:none;">
     <div style="color:#D8F3DC !important; font-size:13px; font-weight:600;">PROFILE: {display_name.upper()} • AGE {age} • BMI {bmi} ({bmi_status.upper()})</div>
@@ -184,60 +174,28 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# 8. Interactive Tabs (Including Live Step Counter & Water Reminders!)
-tab1, tab2, tab3, tab4 = st.tabs([
-    "📊 Dashboard",
-    "🔔 Step & Water Trackers",
-    "💡 AI Advisor & Report",
-    "🧠 ML Model Insights"
-])
+# 8. Interactive Tabs
+tab1, tab2, tab3, tab4 = st.tabs(["📊 Dashboard", "🔔 Step & Water Trackers", "💡 AI Advisor & Report", "🧠 ML Model Insights"])
 
 # ==================== TAB 1: DASHBOARD ====================
 with tab1:
     c1, c2, c3, c4 = st.columns(4)
     with c1:
         step_pct = min(int((steps / 10000) * 100), 100)
-        st.markdown(f"""
-        <div class="health-card">
-            <div class="card-title">🏃 Daily Steps</div>
-            <div class="big-num">{steps:,}</div>
-            <div class="progress-bg"><div class="progress-fill" style="width:{step_pct}%;"></div></div>
-            <div class="sub-text">Goal: 10,000 • <b>{step_pct}%</b></div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f'<div class="health-card"><div class="card-title">🏃 Daily Steps</div><div class="big-num">{steps:,}</div><div class="progress-bg"><div class="progress-fill" style="width:{step_pct}%;"></div></div><div class="sub-text">Goal: 10,000 • <b>{step_pct}%</b></div></div>', unsafe_allow_html=True)
 
     with c2:
         cal_pct = min(int((calories / 1600) * 100), 100)
-        st.markdown(f"""
-        <div class="health-card">
-            <div class="card-title">🔥 Calories Burned</div>
-            <div class="big-num" style="color:#40916C !important;">{calories:,} <span class="unit-text">kcal</span></div>
-            <div class="progress-bg"><div class="progress-fill" style="width:{cal_pct}%;"></div></div>
-            <div class="sub-text">Active: {int(calories * 0.68)} kcal</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f'<div class="health-card"><div class="card-title">🔥 Calories Burned</div><div class="big-num" style="color:#40916C !important;">{calories:,} <span class="unit-text">kcal</span></div><div class="progress-bg"><div class="progress-fill" style="width:{cal_pct}%;"></div></div><div class="sub-text">Active: {int(calories * 0.68)} kcal</div></div>', unsafe_allow_html=True)
 
     with c3:
         hr_pct = min(max(int(((heart_rate - 45) / 85) * 100), 10), 100)
-        st.markdown(f"""
-        <div class="health-card">
-            <div class="card-title">💚 Heart Rate</div>
-            <div class="big-num">{heart_rate} <span class="unit-text">bpm</span></div>
-            <div class="progress-bg"><div class="progress-fill" style="width:{hr_pct}%;"></div></div>
-            <div class="sub-text">Normal: 60–80 bpm</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f'<div class="health-card"><div class="card-title">💚 Heart Rate</div><div class="big-num">{heart_rate} <span class="unit-text">bpm</span></div><div class="progress-bg"><div class="progress-fill" style="width:{hr_pct}%;"></div></div><div class="sub-text">Normal: 60–80 bpm</div></div>', unsafe_allow_html=True)
 
     with c4:
         stress_pct = stress_level * 10
-        st.markdown(f"""
-        <div class="health-card">
-            <div class="card-title">🧘 Stress Index</div>
-            <div class="big-num">{stress_level}<span class="unit-text">/10</span></div>
-            <div class="progress-bg"><div class="progress-fill" style="width:{stress_pct}%;"></div></div>
-            <div class="sub-text">{"Calm State" if stress_level <= 4 else ("Moderate" if stress_level <= 7 else "High Stress")}</div>
-        </div>
-        """, unsafe_allow_html=True)
+        stress_lbl = "Calm State" if stress_level <= 4 else ("Moderate" if stress_level <= 7 else "High Stress")
+        st.markdown(f'<div class="health-card"><div class="card-title">🧘 Stress Index</div><div class="big-num">{stress_level}<span class="unit-text">/10</span></div><div class="progress-bg"><div class="progress-fill" style="width:{stress_pct}%;"></div></div><div class="sub-text">{stress_lbl}</div></div>', unsafe_allow_html=True)
 
     left_col, right_col = st.columns([1.2, 1])
 
@@ -245,9 +203,8 @@ with tab1:
         st.markdown('<div class="health-card"><div class="card-title">📈 Weekly Activity Trend</div>', unsafe_allow_html=True)
         days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
         steps_trend = [6800, 8200, 7100, 9400, 7900, 10200, steps]
-        active_mins = [35, 52, 40, 65, 48, 75, int(steps / 130)]
+        active_mins = [3500, 5200, 4000, 6500, 4800, 7500, int(steps / 130) * 100]
 
         fig_wave = go.Figure()
-        fig_wave.add_trace(go.Scatter(
-            x=days, y=steps_trend, mode='lines+markers', name='Steps',
-            line=dict(color='#52B788',
+        fig_wave.add_trace(go.Scatter(x=days, y=steps_trend, mode='lines+markers', name='Steps', line=dict(color='#52B788', width=3, shape='spline'), fill='tozeroy', fillcolor='rgba(82, 183, 136, 0.22)'))
+        fig_wave.add
